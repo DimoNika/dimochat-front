@@ -52,7 +52,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useAppStateStore } from '@/stores/appState'
-import EmailInput from '@/components/forms/EmailInput.vue'
+
 const appState = useAppStateStore()
 
 const count = ref(0)
