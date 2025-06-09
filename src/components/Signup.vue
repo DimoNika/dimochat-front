@@ -48,16 +48,21 @@
                     Have an account already? <button @click="to_login()" class="text-blue-500 underline cursor-pointer">Login</button>
                 </p>
                 <!-- ... -->
+                <div class="p-0.5 rounded-md bg-gradient-to-br from-red-600 to-pink-600 my-1">
+                    <p v-if=" error_message != 'a' " class="bg-white rounded-sm p-1.5 text-red-500">{{ error_message }}Passwords are not equal</p>
+                </div>
+                <!-- ... -->
+
 
                 <div class="grid grid-cols-2 pt-4.5">
-                    <button @click="to_home()" class="w-fit relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-500 to-orange-400 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
+                    <button type="button" @click="to_home()" class="w-fit relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-500 to-orange-400 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
                         <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
                             Back
                         </span>
                     </button>
                     <!-- ... -->
 
-                    <button type="button" @click="signup()" class="w-fit justify-self-end relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
+                    <button type="button" @click="signup()" class="w-fit justify-self-end relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
                         <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
                             Sign up
                         </span>
@@ -76,6 +81,8 @@ const appState = useAppStateStore()
 const username = ref("")
 const password1 = ref("")
 const password2 = ref("")
+const error_message = ref("")
+console.log(error_message.value);
 
 function to_home() {
     appState.setView("home")
@@ -111,18 +118,27 @@ function signup() {
         // body: data
         body: JSON.stringify(data)
     }
+    // if passworld are equal
+    if (password1.value === password2.value) {
 
-    fetch("api/auth-service/create-user", requestOptions)
-    .then(response => {
-        console.log(response);
-        return response.json();
-    })
-    .then(result => {
-      console.log(result);
-    })
-    .catch(error => {
-      console.error("Error:", error);
-    });
+        fetch("api/auth-service/create-user", requestOptions)
+        .then(response => {
+            if (!response.ok) {
+                console.log("not ok (error)");
+            }
+            console.log(response);
+            return response.json();
+        })
+        .then(result => {
+          console.log(result);
+        })
+        .catch(error => {
+          console.error("Error:", error);
+        });
+    } else { // if passwords are NOT equal
+        console.log("not EQUAL");
+        error_message.value = "Passwords are not equal"
+    }
 
 
 }
