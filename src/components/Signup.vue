@@ -9,47 +9,66 @@
                 <p class="block text-3xl mb-4">
                     Sign up
                 </p>
-                <!-- ... -->
+                <!-- USERNAME -->
                 <p class="pb-2">
                     Choose username
                 </p>
                 <!-- ... -->
                 
                 <label for="Username" class="relative my-3">
-                    <input v-model="username" type="text" id="Username" name="username" placeholder="" class="mb-3 peer px-2 h-10 mt-0.5 w-full rounded border-1 border-zinc-200 shadow sm:text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-white"/>
+                    <input v-model="username" type="text" id="Username" name="username" placeholder="" class="mb-1 peer px-2 h-10 mt-0.5 w-full rounded border-1 border-zinc-200 shadow sm:text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-white"/>
                     <span  class="cursor-text absolute inset-y-0 start-3 -translate-y-5 bg-white px-0.5 text-sm font-medium text-gray-700 transition-transform peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-5">
                         Username
                     </span>
                 </label>
+                
                 <!-- ... -->
+
+                <div v-if=" username_error_msg != ''" class="p-0.5 rounded-md bg-gradient-to-br from-red-600 to-pink-600 my-1">
+                    <p class="bg-white rounded-sm p-1.5 text-red-500">{{ username_error_msg }}</p>
+                </div>
+                <!-- PASSSWORD 1 -->
+
                 <p class="pb-2">
                     Create strong password
                 </p>
                 <!-- ... -->
+
                 <label for="Password1" class="relative my-3">
-                    <input v-model="password1" type="password" id="Password1" name="password1" placeholder="" class="mb-3 peer px-2 h-10 mt-0.5 w-full rounded border-1 border-zinc-200 shadow sm:text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-white"/>
+                    <input v-model="password1" type="password" id="Password1" name="password1" placeholder="" class="mb-1 peer px-2 h-10 mt-0.5 w-full rounded border-1 border-zinc-200 shadow sm:text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-white"/>
                     <span class="cursor-text absolute inset-y-0 start-3 -translate-y-5 bg-white px-0.5 text-sm font-medium text-gray-700 transition-transform peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-5">
                         Password
                     </span>
                 </label>
                 <!-- ... -->
+
+                <div v-if=" password1_error_msg != ''" class="p-0.5 rounded-md bg-gradient-to-br from-red-600 to-pink-600 my-1">
+                    <p class="bg-white rounded-sm p-1.5 text-red-500">{{ password1_error_msg }}</p>
+                </div>
+                <!-- PASSSWORD 2 -->
                 <p class="pb-2">
                     And proove it
                 </p>
                 <!-- ... -->
                 <label for="Password2" class="relative my-3">
-                    <input v-model="password2" type="password" id="Password2" name="password2" placeholder="" class="mb-5 peer px-2 h-10 mt-0.5 w-full rounded border-1 border-zinc-200 shadow sm:text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-white"/>
+                    <input v-model="password2" type="password" id="Password2" name="password2" placeholder="" class="mb-1 peer px-2 h-10 mt-0.5 w-full rounded border-1 border-zinc-200 shadow sm:text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-white"/>
                     <span class="cursor-text absolute inset-y-0 start-3 -translate-y-5 bg-white px-0.5 text-sm font-medium text-gray-700 transition-transform peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-5">
                         Password
                     </span>
                 </label>
                 <!-- ... -->
+
+                <div v-if=" password2_error_msg != ''" class="p-0.5 rounded-md bg-gradient-to-br from-red-600 to-pink-600 my-1">
+                    <p class="bg-white rounded-sm p-1.5 text-red-500">{{ password2_error_msg }}</p>
+                </div>
+                <!-- ... -->
+
                 <p> 
                     Have an account already? <button @click="to_login()" class="text-blue-500 underline cursor-pointer">Login</button>
                 </p>
                 <!-- ... -->
-                <div class="p-0.5 rounded-md bg-gradient-to-br from-red-600 to-pink-600 my-1">
-                    <p v-if=" error_message != 'a' " class="bg-white rounded-sm p-1.5 text-red-500">{{ error_message }}Passwords are not equal</p>
+                <div v-if=" password_equality_error_message != ''" class="p-0.5 rounded-md bg-gradient-to-br from-red-600 to-pink-600 my-1">
+                    <p class="bg-white rounded-sm p-1.5 text-red-500">{{ password_equality_error_message }}</p>
                 </div>
                 <!-- ... -->
 
@@ -81,8 +100,13 @@ const appState = useAppStateStore()
 const username = ref("")
 const password1 = ref("")
 const password2 = ref("")
-const error_message = ref("")
-console.log(error_message.value);
+
+const username_error_msg = ref("")
+const password1_error_msg = ref("")
+const password2_error_msg = ref("")
+
+const password_equality_error_message = ref("")
+
 
 function to_home() {
     appState.setView("home")
@@ -118,26 +142,57 @@ function signup() {
         // body: data
         body: JSON.stringify(data)
     }
+
+
     // if passworld are equal
     if (password1.value === password2.value) {
 
+        password_equality_error_message.value = ""
+        username_error_msg.value = ""
+        password1_error_msg.value = ""
+        password2_error_msg.value = ""
+
         fetch("api/auth-service/create-user", requestOptions)
-        .then(response => {
-            if (!response.ok) {
-                console.log("not ok (error)");
-            }
+        .then(async (response) => {
+
+            const data = await response.json()
             console.log(response);
-            return response.json();
+            console.log(data);
+
+
+            if (response.ok) {
+                // DO SONTHING COOL IF ALL OK
+                console.log("hello");
+                
+            } else if (!response.ok) {
+
+                console.log("not ok (error)");
+                data.forEach(element => {
+                    if (element.loc === "username") {
+                        username_error_msg.value = element.custom_msg
+                    }
+                    if (element.loc === "password1") {
+                        password1_error_msg.value = element.custom_msg
+                    }
+                    if (element.loc === "password2") {
+                        password2_error_msg.value = element.custom_msg
+                    }
+                });
+            }
+            console.log(username_error_msg.value)
+            console.log(password1_error_msg.value)
+            console.log(password2_error_msg.value)
+
+            
         })
-        .then(result => {
-          console.log(result);
-        })
+
         .catch(error => {
-          console.error("Error:", error);
+            console.error("Error:", error);
         });
+
     } else { // if passwords are NOT equal
         console.log("not EQUAL");
-        error_message.value = "Passwords are not equal"
+        password_equality_error_message.value = "Passwords are not equal"
     }
 
 
