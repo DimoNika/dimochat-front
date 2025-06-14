@@ -119,14 +119,8 @@ function to_login() {
     console.log(appState.state);
 }
 
-
 function signup() {
-    // login is system
-    // console.log(username.value);
-    // console.log(username);
-    // console.log("hello worldf");
-    
-
+    // data obj
     let data = {
         "username": username.value,
         "password1": password1.value,
@@ -139,34 +133,43 @@ function signup() {
         headers: {
             "Content-Type": "application/json"
         },
-        // body: data
         body: JSON.stringify(data)
     }
 
 
-    // if passworld are equal
+    // if passworld are equal we do requet to the server
     if (password1.value === password2.value) {
 
+        // reset of all error messages
         password_equality_error_message.value = ""
         username_error_msg.value = ""
         password1_error_msg.value = ""
         password2_error_msg.value = ""
 
+        // request itselt
         fetch("api/auth-service/create-user", requestOptions)
         .then(async (response) => {
 
-            const data = await response.json()
+            const data = await response.json()  // data decoding
             console.log(response);
             console.log(data);
 
 
             if (response.ok) {
                 // DO SONTHING COOL IF ALL OK
-                console.log("hello");
                 
-            } else if (!response.ok) {
+                
+            } else if (!response.ok) { // if user creation is not succesful
+                
+                // error structure:
+                // 
+                // {
+                //      "is_succesful": false, (bool)
+                //      "loc": some_location, (str)
+                //      "custom_msg": message, (str)
+                // }
 
-                console.log("not ok (error)");
+                // itearte through errors
                 data.forEach(element => {
                     if (element.loc === "username") {
                         username_error_msg.value = element.custom_msg
@@ -178,28 +181,18 @@ function signup() {
                         password2_error_msg.value = element.custom_msg
                     }
                 });
-            }
-            console.log(username_error_msg.value)
-            console.log(password1_error_msg.value)
-            console.log(password2_error_msg.value)
-
-            
+            }            
         })
-
         .catch(error => {
             console.error("Error:", error);
         });
 
-    } else { // if passwords are NOT equal
-        console.log("not EQUAL");
+    } else { // if passwords are NOT equal, we show thaw with `password_equality_error_message`
         password_equality_error_message.value = "Passwords are not equal"
     }
-
-
 }
 
 </script>
-
 <style scoped>
 
 </style>
