@@ -95,6 +95,9 @@
 import { ref } from 'vue'
 import { useAppStateStore } from '@/stores/appState'
 
+import { useAuthStore } from '@/stores/auth'
+const authStore = useAuthStore()
+
 const appState = useAppStateStore()
 
 const username = ref("")
@@ -147,16 +150,21 @@ function signup() {
         password2_error_msg.value = ""
 
         // request itselt
-        fetch("api/auth-service/create-user", requestOptions)
+        fetch("http://localhost/api/auth-service/create-user", requestOptions)
         .then(async (response) => {
 
             const data = await response.json()  // data decoding
-            console.log(response);
-            console.log(data);
+            console.log(response)
+            console.log(data)
+            console.log(response.ok)
 
 
             if (response.ok) {
                 // DO SONTHING COOL IF ALL OK
+                console.log(data.access_token)
+                console.log("hellow world")
+                authStore.setAccessToken(data.access_token)
+
                 
                 
             } else if (!response.ok) { // if user creation is not succesful
