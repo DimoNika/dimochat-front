@@ -10,7 +10,8 @@
     <div v-else-if="appState.currentView === 'login'" class="h-screen flex flex-col items-center justify-center">
         <Login />   
     </div>
-    <div v-else-if="appState.currentView === 'chats'" class="h-screen flex flex-col items-center justify-center">
+    <!-- <div v-else-if="appState.currentView === 'chats'" class="h-screen flex flex-col items-center justify-center"> -->
+    <div v-else-if="appState.currentView === 'chats'" class="">
         <Chats />   
     </div>
     <div v-else>
@@ -34,19 +35,17 @@
 
     import { useAuthStore } from '@/stores/auth'
     const authStore = useAuthStore()
+    // FOR DEV NOW SWITCH TO CHATS
+    // appState.setView("chats")
 
 
 
+    // PLACE HERE BEFORE MOUND TO AVOID FLICKERING?
     onMounted(async () => {
         await authStore.refreshAccessToken()
-        // console.log(`alo1 ${authStore.accessToken}`);
 
-        // let test = await authStore.auth()
-        // console.log(`alo ${test}`);
-        // console.log(`alo2 ${await authStore.auth()}`);
-
-        if (authStore.auth()) {
-            console.log("test");
+        if (await authStore.auth()) {
+            // console.log("test");
             appState.setView("chats")
         }
     })

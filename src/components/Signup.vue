@@ -161,9 +161,9 @@ function signup() {
 
             if (response.ok) {
                 // DO SONTHING COOL IF ALL OK
-                console.log(data.access_token)
-                console.log("hellow world")
+                console.log("access token: " + data.access_token)
                 authStore.setAccessToken(data.access_token)
+                appState.setView("chats")
 
                 
                 

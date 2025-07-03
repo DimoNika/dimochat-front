@@ -120,6 +120,8 @@ function login() {
             // console.log(data.access_token)
             // console.log("hellow world")
             authStore.setAccessToken(data.access_token)
+            appState.setView("chats")
+            
 
                 
                 

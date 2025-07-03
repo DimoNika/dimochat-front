@@ -43,7 +43,7 @@ export const useAuthStore = defineStore('authStore', {
         // Обновляем access token через API
         async refreshAccessToken() {
             try {
-                const res = await fetch('http://localhost/api/auth-service/refresh', {
+                const res = await fetch('/api/auth-service/refresh', {
                     method: 'POST',
                     credentials: 'include', // чтобы браузер отправил cookie с refresh_token
                 })
@@ -51,7 +51,7 @@ export const useAuthStore = defineStore('authStore', {
                 if (!res.ok) throw new Error('Refresh failed')
 
                 const data = await res.json()
-                // console.log(data)
+
                 this.setAccessToken(data.access_token)
                 console.log('Access token refreshed: ', this.accessToken)
             } catch (e) {
@@ -82,11 +82,11 @@ export const useAuthStore = defineStore('authStore', {
             }
 
             // request itselt
-            fetch("http://localhost/api/auth-service/auth", requestOptions)
+            return fetch("/api/auth-service/auth", requestOptions)
             .then(async (response) => {
 
                 const data = await response.json()  // data decoding
-                console.log("result: ", data);
+                console.log("Authentication result: ", data);
                 return data
             })
         }
