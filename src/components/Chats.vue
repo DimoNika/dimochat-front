@@ -18,6 +18,9 @@
     import { useListChatStore } from '@/stores/chatListStore'
     const chatListStore = useListChatStore()
 
+    import { useChatStore } from '@/stores/chatStore'
+    const chatStore = useChatStore()
+
     import { provide } from 'vue'
     import { onMounted } from 'vue'
 
@@ -54,33 +57,6 @@
         chatListStore.chatList = await load_chats()
     })
 
-    
-        
-    // function getData() {
-    //     return [
-    //         {
-    //             chat_id: 1,
-    //             user: "Aboba",
-    //             last_message: "hello freak"
-    //         },
-    //         {
-    //             chat_id: 2,
-    //             user: "Gleck",
-    //             last_message: "Money"
-    //         },
-    //         {
-    //             chat_id: 3,
-    //             user: "Freak",
-    //             last_message: "lets play roblox today!"
-    //         },
-    //         {
-    //             chat_id: 4,
-    //             user: "Chell",
-    //             last_message: "nice meme"
-    //         },
-    //     ]
-    // }
-    
     const ws = new WebSocket("/api/chat-service/ws");
 
     // Pass jwt to authenticate in WS opening
@@ -95,11 +71,59 @@
     
     ws.onmessage = function(event) {
         console.log(event)
-        // var messages = document.getElementById('messages')
-        // var message = document.createElement('li')
-        // var content = document.createTextNode(event.data)
-        // message.appendChild(content)
-        // messages.appendChild(message)
+        let response_data_obj = JSON.parse(event.data)
+        console.log(response_data_obj)
+        console.log(response_data_obj.sender_id)
+
+        // check if this message in current chat
+        if (response_data_obj.receiver_id == chatStore.selectedUserId || response_data_obj.sender_id == chatStore.selectedUserId) { 
+            console.log(response_data_obj.message_obj)
+            chatStore.messages.push(response_data_obj.message_obj)
+
+        } 
+        // response_data_obj = {
+        //     "message_obj": new_message.to_dict(),
+        //     "sent_at": str(new_message.sent_at),
+        //     "sender_id": this_user_id,
+        //     "receiver_id": other_user_id,
+        //     "receiver_username": session.query(User).filter_by(id=other_user_id).first().username,
+        // }
+
+        
+        
+        // Get chat in message list
+        const chatList_item = chatListStore.chatList.find(item => {
+            console.log(item);
+            console.log(item.chatter);
+            console.log(item.chatter.user_id);
+            console.log(response_data_obj.sender_id);
+            // response_data_obj.receiver_id == chatStore.selectedUserId || response_data_obj.sender_id == chatStore.selectedUserId
+            // item.chatter.user_id should be equal to sender_id or reciver_id
+            if (item.chatter.user_id === response_data_obj.sender_id || item.chatter.user_id === response_data_obj.receiver_id) {
+                return item
+            }
+        })
+            // chatListStore.chatList = [{
+            //  chatter: {
+            //      username: str
+            //      user_id: int,
+            //      },
+            //  last_message = {
+            //      text: str,
+            //      sent_at: Datetime
+            //      }
+            // }]
+        console.log(chatList_item)
+        console.log(response_data_obj.message_obj.text);
+        chatList_item.last_message.text = response_data_obj.message_obj.text
+        chatList_item.last_message.sent_at = response_data_obj.message_obj.sent_at
+        
+        
+            
+        
+
+
+
     }
 
 

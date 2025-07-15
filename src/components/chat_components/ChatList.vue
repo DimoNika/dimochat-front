@@ -1,7 +1,7 @@
 <template>
     <div >
 
-        <div @click="choose_chat(chat)" v-for="chat in chatListStore.chatList" class="flex flex-row m-1 hover:bg-zinc-600/50 cursor-pointer">
+        <div @click="choose_chat(chat)" v-for="chat in sortedChats" class="flex flex-row m-1 hover:bg-zinc-600/50 cursor-pointer">
         <!-- <div> -->
             <div class="basis-1/4">
                 <img src="https://gravatar.com/avatar/9262bb348b11d4a8ebd7a79725066937?d=mm&s=512&r=x" alt="User pic">
@@ -30,7 +30,7 @@
 
 <script setup>
 import { inject } from 'vue'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineProps } from 'vue'
 import { watch } from 'vue'
 
@@ -45,17 +45,15 @@ function choose_chat(chat) {
     chatStore.selectedUserId = chat.chatter.user_id
 
 }
-    // const chats_list = ref(null)
-    
-    // watch(() => chatListStore.chatList, () => {
-    //             // console.log('messages изменились:', newMessages)
-    //             chats_list.value = chatListStore.chatList
-    //         }
-    // )
 
-    console.log(chatListStore)
-    console.log(chatListStore.chatList.length)
-    console.log("hellow world")
+    const sortedChats = computed(() => {
+        return [...chatListStore.chatList].sort((a, b) => {
+            const dateA = new Date(a.last_message.sent_at.replace(' ', 'T'))
+            const dateB = new Date(b.last_message.sent_at.replace(' ', 'T'))
+            return dateB - dateA // По убыванию: новые сверху
+        })
+    })
+
 
     function format_message(text) {
         if (text.length > 22) {

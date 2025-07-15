@@ -15,8 +15,9 @@
 
     <!----------------->
 
-    <div ref="chatContainer" class="flex-1 overflow-y-auto">
-<div class="p-4 space-y-2 flex flex-col-reverse h-full">
+    <!-- <div ref="chatContainer" class="flex-1"> -->
+    <div ref="chatContainer" class="flex-1 overflow-y-scroll p-4 space-y-2 flex flex-col-reverse">
+    <!-- <div class="p-4 space-y-2 flex flex-col-reverse h-full"> -->
             <!-- No messages -->
             <div v-if="chatStore.messages.length === 0" class="flex-1 flex items-center justify-center">
                 <span class="text-center underline">
@@ -25,7 +26,7 @@
             </div>
 
             <!-- Display messages -->
-            <div v-else>
+            <div v-else class="">
                 <!-- 
                 messages = [{
                     chat_id: 5
@@ -48,7 +49,7 @@
                 </div> 
             </div>
             <!-- и т.д. -->
-        </div>
+        <!-- </div> -->
     </div>
 
     <!-- Инпут -->
@@ -111,8 +112,9 @@ const sendMessage = () => {
   
     nextTick(() => {
         scrollToBottom()
+        messageInput.value = ""
     })
-
+    
 }
 watch(() => chatStore.selectedUserId, async (newVal, oldVal) => {
 
@@ -122,6 +124,8 @@ watch(() => chatStore.selectedUserId, async (newVal, oldVal) => {
     nextTick(() => {
         scrollToBottom()
     })
+
+    // console.log(chatStore.messages)
     // scrollToBottom()
     // if (newVal) chatStore.fetch_messages()
 })
