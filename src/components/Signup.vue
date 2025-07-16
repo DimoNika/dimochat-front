@@ -150,7 +150,7 @@ function signup() {
         password2_error_msg.value = ""
 
         // request itselt
-        fetch("http://localhost/api/auth-service/create-user", requestOptions)
+        fetch("/api/auth-service/create-user", requestOptions)
         .then(async (response) => {
 
             const data = await response.json()  // data decoding
