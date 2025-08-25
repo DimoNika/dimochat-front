@@ -45,7 +45,7 @@
                     <p>
                         {{ message.text }}
                     </p>
-                    <span class="text-xs text-gray-500">{{ message.sent_at }}</span>
+                    <span class="text-xs text-gray-500">{{ myTimeFormatter(message.sent_at) }}</span>
                 </div> 
             </div>
             <!-- и т.д. -->
@@ -53,7 +53,7 @@
     </div>
 
     <!-- Инпут -->
-    <div class="p-2" v-if="chatStore.selectedChatUsername">
+    <div class="p-2 flex" v-if="chatStore.selectedChatUsername">
     <!-- <textarea class="w-full p-2 border rounded" name="" id="" rows="1"></textarea> -->
     
         <input  
@@ -61,8 +61,9 @@
             type="text"
             placeholder="Type..."
             class="w-full p-2 border rounded"
+            @keyup.enter="sendMessage"
         />
-        <button @click="sendMessage()" type="">Send</button>  
+        <button @click="sendMessage()" type="" class="px-3">Send</button>  
     </div>
 </div>
 </template>
@@ -102,20 +103,22 @@ onMounted(() => {
 })
 
 const sendMessage = () => {
-    console.log("message sent");
     let messageData = {
-        "message": messageInput.value,
+        "message": messageInput.value.trim(),
         "selectedUserId": chatStore.selectedUserId,
     }
-    emit('sendMessage', messageData)
-
-  
+    
+    if (messageData.message != "") {
+        console.log("message sent");
+        emit('sendMessage', messageData)
+    }
+    
     nextTick(() => {
         scrollToBottom()
         messageInput.value = ""
     })
-    
 }
+
 watch(() => chatStore.selectedUserId, async (newVal, oldVal) => {
 
     console.log('selectedUserId в store изменился с', oldVal, 'на', newVal)
@@ -125,11 +128,20 @@ watch(() => chatStore.selectedUserId, async (newVal, oldVal) => {
         scrollToBottom()
     })
 
-    // console.log(chatStore.messages)
-    // scrollToBottom()
-    // if (newVal) chatStore.fetch_messages()
+    
 })
-// console.log(messages.value)
+
+// custom function for formatting time from python to humad readable
+function myTimeFormatter(pythonTime) {
+    const isoStr = pythonTime.replace(" ", "T").slice(0, 23);
+    const isoTime = new Date(isoStr + "Z")
+    
+    
+    const pad = n => String(n).padStart(2, "0");
+    return `${pad(isoTime.getHours())}:${pad(isoTime.getMinutes())}`+
+    ` ${isoTime.getFullYear()}.${pad(isoTime.getMonth()+1)}.${pad(isoTime.getDate())} `
+
+}
 
 </script>
 

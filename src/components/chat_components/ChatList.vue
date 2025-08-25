@@ -13,7 +13,7 @@
 </p> -->
                 <!-- <p class="text-amber-300 overflow-hidden text-ellipsis w-full block"> {{ chat.last_message.text }}</p> -->
                 <p class="text-amber-300 overflow-hidden text-ellipsis w-full block"> {{ format_message(chat.last_message.text) }}</p>
-                <p class="text-amber-300"> {{ chat.last_message.sent_at }}</p>
+                <p class="text-amber-300"> {{ myTimeFormatter(chat.last_message.sent_at) }}</p>
 
             </div>
         <!-- </div> -->
@@ -39,6 +39,19 @@ const chatListStore = useListChatStore()
 
 import { useChatStore } from '@/stores/chatStore'
 const chatStore = useChatStore()
+
+// custom function for formatting time from python to humad readable
+function myTimeFormatter(pythonTime) {
+    const isoStr = pythonTime.replace(" ", "T").slice(0, 23);
+    const isoTime = new Date(isoStr + "Z")
+    
+    
+    const pad = n => String(n).padStart(2, "0");
+    return `${pad(isoTime.getHours())}:${pad(isoTime.getMinutes())}`+
+    ` ${isoTime.getFullYear()}.${pad(isoTime.getMonth()+1)}.${pad(isoTime.getDate())} `
+
+}
+
 
 function choose_chat(chat) {
     chatStore.selectedChatUsername = chat.chatter.username

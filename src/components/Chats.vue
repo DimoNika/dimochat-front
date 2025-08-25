@@ -42,7 +42,7 @@
             if (!res.ok) throw new Error('Load chats failed')
             const data = await res.json()
         
-            console.log(`load chats data : ${JSON.stringify(data)}`);
+            // console.log(`load chats data : ${JSON.stringify(data)}`)
             
             return data
         } catch (e) {
