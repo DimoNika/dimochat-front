@@ -42,7 +42,7 @@
             if (!res.ok) throw new Error('Load chats failed')
             const data = await res.json()
         
-            console.log(data);
+            console.log(`load chats data : ${JSON.stringify(data)}`);
             
             return data
         } catch (e) {
@@ -70,14 +70,14 @@
 
     
     ws.onmessage = function(event) {
-        console.log(event)
+        console.log(`Message received: ${event.data}`)
         let response_data_obj = JSON.parse(event.data)
-        console.log(response_data_obj)
-        console.log(response_data_obj.sender_id)
+        console.log(`Message received text: ${response_data_obj.message_obj.text}`)
 
+        
         // check if this message in current chat
         if (response_data_obj.receiver_id == chatStore.selectedUserId || response_data_obj.sender_id == chatStore.selectedUserId) { 
-            console.log(response_data_obj.message_obj)
+            // console.log(response_data_obj.message_obj)
             chatStore.messages.push(response_data_obj.message_obj)
 
         } 
@@ -93,12 +93,6 @@
         
         // Get chat in message list
         const chatList_item = chatListStore.chatList.find(item => {
-            console.log(item);
-            console.log(item.chatter);
-            console.log(item.chatter.user_id);
-            console.log(response_data_obj.sender_id);
-            // response_data_obj.receiver_id == chatStore.selectedUserId || response_data_obj.sender_id == chatStore.selectedUserId
-            // item.chatter.user_id should be equal to sender_id or reciver_id
             if (item.chatter.user_id === response_data_obj.sender_id || item.chatter.user_id === response_data_obj.receiver_id) {
                 return item
             }
@@ -113,17 +107,33 @@
             //      sent_at: Datetime
             //      }
             // }]
+
         console.log(chatList_item)
-        console.log(response_data_obj.message_obj.text);
-        chatList_item.last_message.text = response_data_obj.message_obj.text
-        chatList_item.last_message.sent_at = response_data_obj.message_obj.sent_at
-        
-        
+        // Check if exists chat in chatList
+        if (chatList_item) {
+            // Executes if EXISTS
+            chatList_item.last_message.text = response_data_obj.message_obj.text
+            chatList_item.last_message.sent_at = response_data_obj.message_obj.sent_at
+            console.log("exsits")
+        } else {
+            // Executes if DOES NOT exists
+            // we create new
+            let new_chatList_item = {
+                chatter: {},
+                last_message: {}
+            }
+
+            new_chatList_item.chatter.username = response_data_obj.sender_username
+            new_chatList_item.chatter.user_id = response_data_obj.sender_id
+
+            new_chatList_item.last_message.text = response_data_obj.message_obj.text
+            new_chatList_item.last_message.sent_at = response_data_obj.message_obj.sent_at
+
             
-        
+            chatListStore.chatList.push(new_chatList_item)
+            
 
-
-
+        }
     }
 
 
@@ -131,19 +141,12 @@
     function sendMessage(messageData) {
         console.log("hellow orld");
         ws.send(JSON.stringify(messageData))
-        console.log(messageData.message);
+        console.log(`message text: ${messageData.message}`)
+        console.log(`message receiver: ${messageData.selectedUserId}`)
+
     }
 
     
-    // console.log(data);
-    
-
-    // onMounted(async () => {
-    //     let data = getData()
-    //     console.log(data);
-    //     provide("chats_data", getData())
-    // })
-
 
 </script>
 

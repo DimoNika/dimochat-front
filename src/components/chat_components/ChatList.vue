@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div class="overflow-auto">
 
         <div @click="choose_chat(chat)" v-for="chat in sortedChats" class="flex flex-row m-1 hover:bg-zinc-600/50 cursor-pointer">
         <!-- <div> -->
