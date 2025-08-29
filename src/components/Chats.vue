@@ -82,19 +82,7 @@
             chatStore.messages.push(response_data_obj.message_obj)
 
         }
-        console.log("AAA", chatStore.messages.length)
-        // if (chatStore.messages.length == 0) {
-        //     chatStore.messages.push(response_data_obj.message_obj)
-        // }
-        // response_data_obj = {
-        //     "message_obj": new_message.to_dict(),
-        //     "sent_at": str(new_message.sent_at),
-        //     "sender_id": this_user_id,
-        //     "receiver_id": other_user_id,
-        //     "receiver_username": session.query(User).filter_by(id=other_user_id).first().username,
-        // }
-
-        
+       
         
         // Get chat in message list
         const chatList_item = chatListStore.chatList.find(item => {
@@ -128,8 +116,8 @@
                 last_message: {}
             }
 
-            new_chatList_item.chatter.username = response_data_obj.sender_username
-            new_chatList_item.chatter.user_id = response_data_obj.sender_id
+            new_chatList_item.chatter.username = response_data_obj.receiver_username
+            new_chatList_item.chatter.user_id = response_data_obj.receiver_id
 
             new_chatList_item.last_message.text = response_data_obj.message_obj.text
             new_chatList_item.last_message.sent_at = response_data_obj.message_obj.sent_at
