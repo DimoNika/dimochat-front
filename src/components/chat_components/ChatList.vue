@@ -40,7 +40,7 @@ const chatListStore = useListChatStore()
 import { useChatStore } from '@/stores/chatStore'
 const chatStore = useChatStore()
 
-// custom function for formatting time from python to humad readable
+// custom function for formatting time from python to human readable
 function myTimeFormatter(pythonTime) {
     const isoStr = pythonTime.replace(" ", "T").slice(0, 23);
     const isoTime = new Date(isoStr + "Z")
@@ -48,7 +48,7 @@ function myTimeFormatter(pythonTime) {
     
     const pad = n => String(n).padStart(2, "0");
     return `${pad(isoTime.getHours())}:${pad(isoTime.getMinutes())}`+
-    ` ${isoTime.getFullYear()}.${pad(isoTime.getMonth()+1)}.${pad(isoTime.getDate())} `
+    ` ${pad(isoTime.getDate())}.${pad(isoTime.getMonth()+1)}.${isoTime.getFullYear()}`
 
 }
 
