@@ -109,9 +109,7 @@ function create_new_chat() {
         console.log(data);
         // try{
             // }
-        chatStore.selectedChatUsername = data.username
-        chatStore.selectedUserId = data.user_id
-        chatStore.messages = data.messages
+
 
 
         // Data annotation
@@ -124,10 +122,14 @@ function create_new_chat() {
         
 
         if (response.ok) {
-            userNotFound_error_visible.value = false
+            chatStore.selectedChatUsername = data.username
+            chatStore.selectedUserId = data.user_id
+            chatStore.messages = data.messages
+            userNotFound_error_visible.value = true
             close()
 
         } else if (!response.ok) { // if user creation is not succesful
+            userNotFound_error_visible.value = false
             
         }})
 
