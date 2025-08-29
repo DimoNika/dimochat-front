@@ -78,9 +78,14 @@
         // check if this message in current chat
         if (response_data_obj.receiver_id == chatStore.selectedUserId || response_data_obj.sender_id == chatStore.selectedUserId) { 
             // console.log(response_data_obj.message_obj)
+            // TODO fix this
             chatStore.messages.push(response_data_obj.message_obj)
 
-        } 
+        }
+        console.log("AAA", chatStore.messages.length)
+        // if (chatStore.messages.length == 0) {
+        //     chatStore.messages.push(response_data_obj.message_obj)
+        // }
         // response_data_obj = {
         //     "message_obj": new_message.to_dict(),
         //     "sent_at": str(new_message.sent_at),
